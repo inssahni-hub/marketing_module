@@ -1,0 +1,221 @@
+import React, { useState } from 'react';
+import { ToggleLeft, ToggleRight, PlusCircle, CheckCircle, Search, Sparkles, SlidersHorizontal, Calendar, ArrowUpRight } from 'lucide-react';
+import EventSelect from '@/components/common/EventSelect';
+
+export default function FacebookCampaignTable({ campaigns, onCreateCampaign, onToggleStatus, connected }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [name, setName] = useState('');
+  const [objective, setObjective] = useState('CONVERSIONS');
+  const [budgetType, setBudgetType] = useState('DAILY');
+  const [budget, setBudget] = useState('50');
+  const [eventId, setEventId] = useState('evt_summer_party_2026');
+  const [organizerId, setOrganizerId] = useState('');
+  const [eventTitle, setEventTitle] = useState('Summer Music Festival 2026');
+
+  const filtered = campaigns.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    if (!name || !budget || !eventId) return;
+    onCreateCampaign({
+      name,
+      objective,
+      budgetType,
+      budget: parseFloat(budget),
+      eventId,
+      eventTitle,
+      organizerId,
+      startDate: new Date(),
+    }).then(() => {
+      setName('');
+      setShowAddForm(false);
+    });
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden" id="fb-campaign-table">
+      <div className="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-semibold text-slate-800 text-sm">Meta Facebook Campaigns</h3>
+          <p className="text-xs text-slate-500">Live synchronized active ad sets for connected event listings</p>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <div className="relative">
+            <Search className="h-3.5 w-3.5 absolute left-3 top-2.5 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search campaigns..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="text-xs pl-8 pr-3 py-1.5 w-44 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 font-semibold hover:bg-blue-100 text-blue-600 rounded-lg text-xs border border-blue-200 transition"
+          >
+            <PlusCircle className="h-3.5 w-3.5" /> Launch Ad AdSet
+          </button>
+        </div>
+      </div>
+
+      {showAddForm && (
+        <form onSubmit={handleCreate} className="p-5 bg-slate-50/50 border-b border-slate-100 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="md:col-span-2">
+            <label className="block text-[10px] font-semibold text-slate-500 mb-1">Campaign AdSet Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Dance Festival Retargeting Ad"
+              className="w-full text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-700 font-medium"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-semibold text-slate-500 mb-1">Marketing Objective</label>
+            <select
+              value={objective}
+              onChange={(e) => setObjective(e.target.value)}
+              className="w-full text-xs px-2 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-700 font-medium"
+            >
+              <option value="CONVERSIONS">Ticket Sales Conversion</option>
+              <option value="LINK_CLICKS">Link Traffic Boost</option>
+              <option value="EVENT_RESPONSES">Event Attendee RSVPs</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-semibold text-slate-500 mb-1">Budget ($ Daily)</label>
+            <input
+              type="number"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              placeholder="50"
+              className="w-full text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-700 font-medium"
+              required
+            />
+          </div>
+
+          <div className="md:col-span-1">
+            <label className="block text-[10px] font-semibold text-slate-500 mb-1">Event Target mapping</label>
+            <EventSelect
+              value={eventId}
+              onChange={(id, event) => {
+                setEventId(id);
+                setEventTitle(event?.title || '');
+                setOrganizerId(event?.organizerId)
+              }}
+            />
+          </div>
+
+          <div className="md:col-span-3 flex justify-end gap-2 text-xs">
+            <button
+              type="button"
+              onClick={() => setShowAddForm(false)}
+              className="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm"
+            >
+              Publish AdSet
+            </button>
+          </div>
+        </form>
+      )}
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr className="bg-slate-50/75 border-b border-slate-100 text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+              <th className="py-3 px-4">Campaign Details</th>
+              <th className="py-3 px-4 text-center">Status</th>
+              <th className="py-3 px-4">Budget</th>
+              <th className="py-3 px-4 text-right">Spent</th>
+              <th className="py-3 px-4 text-right">Impressions</th>
+              <th className="py-3 px-4 text-right">Clicks</th>
+              <th className="py-3 px-4 text-right">Conversions</th>
+              <th className="py-3 px-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 text-slate-600">
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="py-8 text-center text-slate-400">
+                  No Facebook campaign sets loaded yet. Sync your connected ad account profile.
+                </td>
+              </tr>
+            ) : (
+              filtered.map((c) => {
+                const ctr = c.impressions ? ((c.clicks / c.impressions) * 100).toFixed(2) : '0.00';
+                return (
+                  <tr key={c.campaignId} className="hover:bg-slate-50/50 transition">
+                    <td className="py-3.5 px-4">
+                      <div>
+                        <span className="font-semibold text-slate-800 text-[13px] block">{c.name}</span>
+                        <div className="flex items-center gap-2 mt-0.5 mt-1 text-[10px]">
+                          <span className="font-mono text-slate-400 bg-slate-100 px-1 rounded">{c.campaignId}</span>
+                          <span className="text-slate-400">•</span>
+                          <span className="text-blue-600 font-medium bg-blue-50 px-1 rounded">{c.objective}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        c.status === 'ACTIVE'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                          : 'bg-amber-50 text-amber-700 border border-amber-100'
+                      }`}>
+                        {c.status}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 font-semibold text-slate-700">
+                      ${c.budget.toFixed(2)}
+                      <span className="text-[10px] text-slate-400 block font-normal">{c.budgetType}</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-medium text-slate-700">${c.spent.toFixed(2)}</td>
+                    <td className="py-3.5 px-4 text-right text-slate-500 font-mono">{c.impressions.toLocaleString()}</td>
+                    <td className="py-3.5 px-4 text-right text-slate-500 font-mono">
+                      {c.clicks.toLocaleString()}
+                      <span className="text-[10px] text-slate-400 block font-normal">{ctr}% CTR</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-semibold text-slate-800 font-mono">
+                      {c.conversions.toLocaleString()}
+                      <span className="text-[10px] text-emerald-600 block font-normal">
+                        ${c.spent > 0 ? (c.spent / (c.conversions || 1)).toFixed(2) : '0.00'} CPA
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      <div className="flex justify-center">
+                        <button
+                          type="button"
+                          onClick={() => onToggleStatus(c.campaignId, c.status)}
+                          className="text-slate-400 hover:text-blue-600 transition"
+                          title="Toggle Ad Active State"
+                        >
+                          {c.status === 'ACTIVE' ? (
+                            <ToggleRight className="h-6 w-6 text-blue-600" />
+                          ) : (
+                            <ToggleLeft className="h-6 w-6 text-slate-300" />
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
