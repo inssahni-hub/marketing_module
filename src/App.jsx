@@ -78,7 +78,7 @@ export default function App() {
       onLogout={handleLogout}
       onProfileClick={() => {
         if (user?._id) {
-          navigate(`/user/${user._id}`);
+           navigate(`/admin/user/${user._id}`);
         }
       }}
       logo={logo}
