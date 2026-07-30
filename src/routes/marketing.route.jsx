@@ -23,7 +23,7 @@ export default function EventRoutes() {
   return (
     <Routes>
       <Route
-        path="/admin"
+        path="/"
         element={<CheckAuth />}
       >
         

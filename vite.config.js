@@ -9,7 +9,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: process.env.VITE_BASE_PATH || "/", // ensures router works
+  base: "/admin/marketing/",
   server: {
     port: 5178,
     open: true, // auto-open browser
