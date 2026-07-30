@@ -24,7 +24,7 @@ export default function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  
+
   const websiteUrl = import.meta.env.VITE_AUTH_LOGIN_URL;
 
   /* ================= AUTH BOOTSTRAP ================= */
@@ -78,14 +78,17 @@ export default function App() {
       onLogout={handleLogout}
       onProfileClick={() => {
         if (user?._id) {
-           navigate(`/admin/user/${user._id}`);
+          window.location.href = `/admin/users/user/${user._id}`;
         }
       }}
       logo={logo}
-      logoLink="/dashboard"
+      onLogoClick={() => {
+        window.location.href = `/admin/dashboard/home`;
+      }}
       ActiveRoleSwitch={ActiveRoleSwitch}
       OrgRoleSwitch={OrgRoleSwitch}
-      NotificationComponent={MyNotifications} // optional
+      NotificationComponent={MyNotifications} // optional,
+      current_module="marketing"
     >
       <MarketingRoutes />
       <SessionExpiredModal />
