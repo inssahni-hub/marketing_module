@@ -15,7 +15,7 @@ export default function FacebookAdPage({ campaignId, adSetId, creativeId, onAdCr
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
-  // Sync props change
+ 
   useEffect(() => {
     if (adSetId) {
       setSelectedAdSetId(adSetId);
