@@ -28,10 +28,10 @@ export default function EventRoutes() {
       >
         
 
-        <Route path="marketing/facebook" element={<ProtectedRoute permissions={["event.view"]}><FacebookMarketingPage /></ProtectedRoute>}/>
-        <Route path="marketing/facebook-ads" element={<ProtectedRoute permissions={["event.view"]}><FacebookAdsManager /></ProtectedRoute>}/>
-        <Route path="marketing/email" element={<EmailMarketingCenter />}/>
-        <Route path="marketing/sms" element={<SMSMarketingCenter />}/>
+        <Route path="facebook" element={<ProtectedRoute permissions={["event.view"]}><FacebookMarketingPage /></ProtectedRoute>}/>
+        <Route path="facebook-ads" element={<ProtectedRoute permissions={["event.view"]}><FacebookAdsManager /></ProtectedRoute>}/>
+        <Route path="email" element={<EmailMarketingCenter />}/>
+        <Route path="sms" element={<SMSMarketingCenter />}/>
 
       </Route>
      
